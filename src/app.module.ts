@@ -8,6 +8,9 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config';
+import { AccountModule } from './accounts/account.module';
+import { TransactionModule } from './transactions/transaction.module';
+import { KycModule } from './identities/kyc.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import configuration from './config';
     AuthModule,
     UsersModule,
     TasksModule,
+    AccountModule,
+    TransactionModule,
+    KycModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,8 +11,8 @@ export const dbConfig = (): PostgresConnectionOptions => ({
   ssl: true,
   extra: {
     ssl: {
-      rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+    },
   },
   entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
   // We are using migrations, synchronize should be set to false.
