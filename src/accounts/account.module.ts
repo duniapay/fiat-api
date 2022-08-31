@@ -8,13 +8,7 @@ import { dbConfig } from '../config/database';
 import { LoggerModule } from '../logger/logger.module';
 
 @Module({
-  imports: [
-    LoggerModule,
-    TypeOrmModule.forRoot({
-      ...dbConfig,
-      entities: [AccountEntity],
-    }),
-  ],
+  imports: [LoggerModule, TypeOrmModule.forFeature([AccountEntity])],
   controllers: [AccountController],
   providers: [AccountService, AccountRepository],
 })
