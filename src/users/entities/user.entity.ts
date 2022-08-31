@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { AccountEntity } from '../../accounts/entity/account.entity';
+import { TransferEntity } from '../../transactions/entity/transfer.entity';
 import { Role } from '../enums/role.enum';
 
 @Entity()
@@ -28,5 +30,11 @@ export class User {
 
   // currenciesAccount
   // fiatAccounts
+
+  @OneToMany(() => AccountEntity, (photo) => photo.partner) // note: we will create author property in the Photo class below
+  accounts: AccountEntity[];
+
   // transactions
+  @OneToMany(() => TransferEntity, (photo) => photo.partner) // note: we will create author property in the Photo class below
+  transactions: TransferEntity[];
 }

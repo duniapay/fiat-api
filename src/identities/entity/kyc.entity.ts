@@ -1,5 +1,6 @@
 import { KycSchema, KycStatus } from '@fiatconnect/fiatconnect-types';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm';
+import { AccountEntity } from '../../accounts/entity/account.entity';
 
 @Entity()
 export class KYCEntity extends BaseEntity {
@@ -53,4 +54,7 @@ export class KYCEntity extends BaseEntity {
   selfieDocument: string;
   @Column({ type: 'varchar', length: 255 })
   identificationDocument: string;
+
+  @ManyToOne(() => AccountEntity, (account) => account.identities)
+  account: AccountEntity;
 }

@@ -1,5 +1,6 @@
 import { TransferStatus, TransferType } from '@fiatconnect/fiatconnect-types';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class TransferEntity extends BaseEntity {
@@ -8,6 +9,9 @@ export class TransferEntity extends BaseEntity {
 
   @Column({ name: 'fiatAccountId', type: 'varchar', length: 255 })
   fiatAccountId: string;
+
+  @ManyToOne(() => User, (user) => user.transactions)
+  partner: User;
 
   @Column({})
   amount: number;

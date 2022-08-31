@@ -1,9 +1,7 @@
-import {
-  FiatAccountSchema,
-  FiatAccountType,
-  SupportedOperatorEnum,
-} from '@fiatconnect/fiatconnect-types';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { FiatAccountSchema, FiatAccountType, SupportedOperatorEnum } from '@fiatconnect/fiatconnect-types';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, OneToMany } from 'typeorm';
+import { KYCEntity } from '../../identities/entity/kyc.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class AccountEntity extends BaseEntity {
@@ -33,6 +31,10 @@ export class AccountEntity extends BaseEntity {
   })
   @Column({ name: 'owner', type: 'varchar', length: 255 })
   owner: string;
+
+  @ManyToOne(() => User, (user) => user.accounts)
+  partner: User;
+
   fiatAccountType: FiatAccountType;
   @Column({
     name: 'fiatAccountSchema',
@@ -40,4 +42,7 @@ export class AccountEntity extends BaseEntity {
     enum: FiatAccountSchema,
   })
   fiatAccountSchema: FiatAccountSchema;
+
+  @OneToMany(() => KYCEntity, (identity) => identity.account) // note: we will create author property in the Photo class below
+  identities: KYCEntity[];
 }
