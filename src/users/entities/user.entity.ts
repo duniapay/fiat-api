@@ -25,4 +25,8 @@ export class User {
     default: Role.standard,
   })
   roles: Role[];
+
+  // currenciesAccount
+  // fiatAccounts
+  // transactions
 }

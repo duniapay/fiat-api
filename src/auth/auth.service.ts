@@ -70,7 +70,8 @@ export class AuthService {
     const userDTO = new UsersDTO();
     userDTO.email = body.email;
     userDTO.name = body.name;
-    userDTO.password = bcryptjs.hashSync(body.password, 10);
+    const SALT = 10;
+    userDTO.password = bcryptjs.hashSync(body.password, SALT);
 
     // Validate DTO against validate function from class-validator
     await validate(userDTO).then((errors) => {
