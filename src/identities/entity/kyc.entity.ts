@@ -4,8 +4,8 @@ import { AccountEntity } from '../../accounts/entity/account.entity';
 
 @Entity()
 export class KYCEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ name: 'kycRequired', type: 'bool' })
   kycRequired: boolean;
@@ -26,7 +26,7 @@ export class KYCEntity extends BaseEntity {
 
   @Column({ type: 'varchar', length: 255 })
   firstName: string;
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   middleName?: string;
   @Column({ type: 'varchar', length: 255 })
   lastName: string;
@@ -47,8 +47,8 @@ export class KYCEntity extends BaseEntity {
     postalCode?: string;
   };
   @Column({ type: 'varchar', length: 255 })
-  phoneNumber: string;
-  @Column({ type: 'varchar', length: 255 })
+  mobile: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
   email?: string;
   @Column({ type: 'varchar', length: 255 })
   selfieDocument: string;

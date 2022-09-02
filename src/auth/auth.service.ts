@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import bcryptjs from 'bcryptjs';
-import { UsersDTO } from 'src/users/dto/create-user.dto';
+import { LoginUserDTO, UsersDTO } from 'src/users/dto/create-user.dto';
 import { validate } from 'class-validator';
 import { LoggerService } from 'src/logger/logger.service';
 import { UsersService } from 'src/users/users.service';
+import { pbkdf2Sync, randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +19,7 @@ export class AuthService {
     let isOk = false;
 
     // Transform body into DTO
-    const userDTO = new UsersDTO();
+    const userDTO = new LoginUserDTO();
     userDTO.email = user.email;
     userDTO.password = user.password;
 
@@ -27,7 +27,7 @@ export class AuthService {
     // Validate DTO against validate function from class-validator
     await validate(userDTO).then((errors) => {
       if (errors.length > 0) {
-        this.logger.debug(`${errors}`);
+        this.logger.debug('login', `${errors}`);
       } else {
         isOk = true;
       }
@@ -42,15 +42,23 @@ export class AuthService {
         return { status: 401, msg: { msg: 'Invalid credentials' } };
       }
 
+      const hash = pbkdf2Sync(user.password, userDetails.salt, 1000, 64, 'sha512').toString('hex');
       // Check if the given password match with saved password
-      const isValid = bcryptjs.compareSync(user.password, userDetails.password);
+      const isValid = hash === userDetails.password;
       if (isValid) {
         // Generate JWT token
         return {
           status: 200,
           msg: {
-            email: user.email,
             access_token: this.jwtService.sign({ email: user.email }),
+            data: {
+              id: userDetails.id,
+              email: user.email,
+              balance: userDetails.balance,
+              currency: userDetails.currency,
+              status: userDetails.isActive,
+              business_name: userDetails.business_name,
+            },
           },
         };
       } else {
@@ -65,13 +73,28 @@ export class AuthService {
   async register(body: any): Promise<Record<string, any>> {
     // Validation Flag
     let isOk = false;
+    let salt = '';
+    let hash = '';
 
     // Transform body into DTO
     const userDTO = new UsersDTO();
     userDTO.email = body.email;
-    userDTO.name = body.name;
-    const SALT = 10;
-    userDTO.password = bcryptjs.hashSync(body.password, SALT);
+    userDTO.firstname = body.firstname;
+    userDTO.lastname = body.lastname;
+    userDTO.business_name = body.business_name;
+    userDTO.currency = body.currency;
+    userDTO.address = body.address;
+    userDTO.mobile = body.mobile;
+
+    // Creating a unique salt for a particular user
+    salt = randomBytes(16).toString('hex');
+
+    userDTO.salt = salt;
+
+    // Hashing user's salt and password with 1000 iterations,
+    //  64 length and sha512 digest
+    hash = pbkdf2Sync(body.password, salt, 1000, 64, 'sha512').toString('hex');
+    userDTO.password = hash;
 
     // Validate DTO against validate function from class-validator
     await validate(userDTO).then((errors) => {

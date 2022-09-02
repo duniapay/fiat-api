@@ -1,8 +1,4 @@
-import {
-  SupportedOperatorEnum,
-  FiatAccountType,
-  FiatAccountSchema,
-} from '@fiatconnect/fiatconnect-types';
+import { SupportedOperatorEnum, FiatAccountType, FiatAccountSchema } from '@fiatconnect/fiatconnect-types';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { BaseDTO } from '../../domain/dto/basedto.interface';
 

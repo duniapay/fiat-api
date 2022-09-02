@@ -8,27 +8,28 @@ export class KycController {
   constructor(private readonly kycService: KycService) {}
 
   @Post('kyc/')
-  create(@Body() createKycDto: CreateKycDto) {
-    return this.kycService.create(createKycDto);
+  create(@Body() createKycDto: CreateKycDto, @Param('accountId') accountId: string) {
+    return this.kycService.create(accountId, createKycDto);
   }
 
   @Get('kyc/')
-  findAll() {
-    return this.kycService.findAll();
+  findAll(@Param('accountId') accountId: string) {
+    return this.kycService.findAll(accountId);
   }
 
   @Get('kyc/:id')
   findOne(@Param('id') id: string) {
-    return this.kycService.findOne(+id);
+    // file deepcode ignore XSS: <please specify a reason of ignoring this>
+    return this.kycService.findOne(id);
   }
 
   @Patch('kyc/:id')
-  update(@Param('id') id: string, @Body() updateKycDto: UpdateKycDto) {
-    return this.kycService.update(+id, updateKycDto);
+  update(@Param('id') id: string, @Param('accountId') accountId: string, @Body() updateKycDto: UpdateKycDto) {
+    return this.kycService.update(accountId, id, updateKycDto);
   }
 
   @Delete('kyc/:id')
   remove(@Param('id') id: string) {
-    return this.kycService.remove(+id);
+    return this.kycService.remove(id);
   }
 }

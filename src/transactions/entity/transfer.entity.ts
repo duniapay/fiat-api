@@ -4,18 +4,22 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class TransferEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ name: 'fiatAccountId', type: 'varchar', length: 255 })
   fiatAccountId: string;
+
+
+  @Column({ name: 'currency', type: 'varchar', length: 255 })
+  currency: string;
 
   @ManyToOne(() => User, (user) => user.transactions)
   partner: User;
 
   @Column({})
   amount: number;
-  @Column({ type: 'simple-json' })
+  @Column({ type: 'simple-json', nullable: true })
   metadata: {
     transferAddress?: string;
     quote: any;

@@ -12,6 +12,7 @@ import { AccountModule } from './accounts/account.module';
 import { TransactionModule } from './transactions/transaction.module';
 import { KycModule } from './identities/kyc.module';
 import { HealthModule } from './health/health.module';
+import { MessagingModule } from './messaging/messaging.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { HealthModule } from './health/health.module';
       inject: [ConfigService],
     }),
     HealthModule,
+
     ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
@@ -33,6 +35,7 @@ import { HealthModule } from './health/health.module';
     TransactionModule,
     KycModule,
     HealthModule,
+    MessagingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
