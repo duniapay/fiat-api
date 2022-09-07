@@ -1,5 +1,5 @@
 import { KycSchema, KycStatus } from '@fiatconnect/fiatconnect-types';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { AccountEntity } from '../../accounts/entity/account.entity';
 
 @Entity()
@@ -42,7 +42,6 @@ export class KYCEntity extends BaseEntity {
     address1: string;
     address2?: string;
     isoCountryCode: string;
-    isoRegionCode: string;
     city: string;
     postalCode?: string;
   };
@@ -57,4 +56,13 @@ export class KYCEntity extends BaseEntity {
 
   @ManyToOne(() => AccountEntity, (account) => account.identities)
   account: AccountEntity;
+
+  @CreateDateColumn()
+  created_At: Date;
+
+  @UpdateDateColumn()
+  updated_At: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  expires_At: Date;
 }

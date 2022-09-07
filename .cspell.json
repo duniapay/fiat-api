@@ -11,9 +11,13 @@
   "language": "en",
   "noConfigSearch": true,
   "words": [
+    "fiatconnect",
     "firstname",
+    "formated",
     "lastname",
-    "microservices"
+    "microservices",
+    "paymnts",
+    "typeorm"
   ],
   "version": "0.2"
 }

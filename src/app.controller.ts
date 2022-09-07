@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Req, Res, UseGuards } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/strategy/jwt-auth.guard';

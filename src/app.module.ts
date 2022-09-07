@@ -25,8 +25,6 @@ import { MessagingModule } from './messaging/messaging.module';
       useFactory: (configService: ConfigService) => configService.get('database'),
       inject: [ConfigService],
     }),
-    HealthModule,
-
     ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,

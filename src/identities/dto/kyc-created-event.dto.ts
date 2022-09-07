@@ -9,6 +9,10 @@ export class KycCreatedDto {
   public readonly middleName?: string;
   public readonly email: string;
   public readonly lastName: string;
+  public readonly expires_At?: Date;
+  public readonly created_At?: Date;
+  public readonly updated_At?: Date;
+
   public readonly dateOfBirth: {
     day: string;
     month: string;
@@ -18,7 +22,6 @@ export class KycCreatedDto {
     address1: string;
     address2?: string;
     isoCountryCode: string;
-    isoRegionCode: string;
     city: string;
     postalCode?: string;
   };
@@ -38,5 +41,8 @@ export class KycCreatedDto {
     this.identificationDocument = props.identificationDocument;
     this.status = props.status;
     this.email = props.email;
+    this.created_At = props.created_At;
+    this.updated_At = props.updated_At;
+    this.expires_At = props.expires_At;
   }
 }

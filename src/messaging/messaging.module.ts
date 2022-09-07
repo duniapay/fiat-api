@@ -1,26 +1,42 @@
-import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MessagingController } from './messaging.controller';
 import { MessagingService } from './messaging.service';
+import { KycModule } from '../identities/kyc.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
+    UsersModule,
     ClientsModule.register([
       {
-        name: 'any_name_i_want',
+        name: 'IDENTITY_SERVICE',
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'any_client_id_i_want',
+            clientId: 'identity',
             brokers: ['localhost:29092'],
           },
           consumer: {
-            groupId: 'an_unique_string_id',
+            groupId: 'identity-consumer',
+          },
+        },
+      },
+      {
+        name: 'PAYMNTS_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'payments',
+            brokers: ['localhost:29092'],
+          },
+          consumer: {
+            groupId: 'payments-consumer',
           },
         },
       },
     ]),
+    KycModule,
     MessagingModule,
   ],
   providers: [MessagingService, MessagingController],

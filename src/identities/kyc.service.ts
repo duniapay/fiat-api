@@ -1,5 +1,5 @@
 import { KycStatus } from '@fiatconnect/fiatconnect-types';
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../accounts/entity/account.entity';
@@ -25,6 +25,17 @@ export class KycService {
       createKycDto;
     // Load account repository
     const account = await this.accRepository.findOneBy({ id: accountId });
+
+    // Validate Day of Birth
+    const formatedDate = `${dateOfBirth.month}-${dateOfBirth.day}-${dateOfBirth.year}`;
+    const formattedDayOfBirth = new Date(formatedDate);
+    const now = new Date();
+    const isValid = validateDateOfBirth(now, formattedDayOfBirth);
+
+    if (!isValid) {
+      throw new HttpException('Invalid Parameters: User should be at least 20 Years old', 400);
+    }
+
     const entity = new KYCEntity();
     entity.address = address;
     entity.dateOfBirth = dateOfBirth;
@@ -37,12 +48,14 @@ export class KycService {
     entity.email = email;
     entity.selfieDocument = selfieDocument;
     entity.identificationDocument = identificationDocument;
+    const nextThreeMonths = new Date().setMonth(new Date(Date.now()).getMonth() + 3);
+    entity.expires_At = new Date(nextThreeMonths);
     const resp = await this.repository.save(entity);
 
     account.identities = [entity];
 
     this.accRepository.save(account);
-    this.messagingService.publish(
+    await this.messagingService.publishToKycTopic(
       'identity.created',
       new KycCreatedDto({
         id: entity.id,
@@ -56,6 +69,7 @@ export class KycService {
         phoneNumber,
         selfieDocument,
         identificationDocument,
+        expires_At: entity.expires_At,
       }),
     );
     return entity;
@@ -94,6 +108,17 @@ export class KycService {
       selfieDocument,
       identificationDocument,
     } = updateKycDto;
+
+    // Validate Day of Birth
+    const formatedDate = `${dateOfBirth.day}-${dateOfBirth.month}-${dateOfBirth.year}`;
+    const formattedDayOfBirth = new Date(formatedDate);
+    const now = new Date();
+    const isValid = validateDateOfBirth(now, formattedDayOfBirth);
+
+    if (!isValid) {
+      throw new HttpException('Invalid Parameters: User should be at least 20 Years old', 400);
+    }
+
     entity.address = { ...address };
     entity.dateOfBirth = dateOfBirth;
     entity.kycSchemaName = kycSchemaName;
@@ -105,9 +130,12 @@ export class KycService {
     entity.email = email;
     entity.selfieDocument = selfieDocument;
     entity.identificationDocument = identificationDocument;
+    const nextThreeMonths = new Date().setMonth(new Date(Date.now()).getMonth() + 3);
+    // TODO: Should check if new document
+    entity.expires_At = new Date(nextThreeMonths);
 
     await this.repository.update({ id }, entity);
-    this.messagingService.publish(
+    await this.messagingService.publishToKycTopic(
       'identity.updated',
       new KycUpdatedDto({
         id: entity.id,
@@ -131,4 +159,11 @@ export class KycService {
     const entity = await this.repository.findOneBy({ id });
     return this.repository.remove(entity);
   }
+}
+function validateDateOfBirth(now: Date, formattedDayOfBirth: Date) {
+  const todayYear = now.getFullYear();
+  const dayOfBirthYear = formattedDayOfBirth.getFullYear();
+  const isValid = todayYear - dayOfBirthYear;
+  console.log('formatedDate :', formattedDayOfBirth);
+  return isValid > 19;
 }

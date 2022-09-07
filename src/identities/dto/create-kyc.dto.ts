@@ -1,6 +1,9 @@
 import { KycSchema, KycStatus } from '@fiatconnect/fiatconnect-types';
-import { IsOptional, IsNotEmpty } from 'class-validator';
+import { IsOptional, IsNotEmpty, ValidateNested, IsEmail } from 'class-validator';
 import { BaseDTO } from '../../domain/dto/basedto.interface';
+import { Type } from 'class-transformer';
+import { AddressDto } from './address.dto';
+import { DayOfBirthDto } from './dob.dto';
 
 export class CreateKycDto extends BaseDTO {
   @IsOptional()
@@ -14,24 +17,19 @@ export class CreateKycDto extends BaseDTO {
   @IsOptional()
   middleName?: string;
   @IsNotEmpty()
+  @IsEmail()
   email: string;
   @IsNotEmpty()
   lastName: string;
   @IsNotEmpty()
-  dateOfBirth: {
-    day: string;
-    month: string;
-    year: string;
-  };
+  @ValidateNested()
+  @Type(() => DayOfBirthDto)
+  dateOfBirth: DayOfBirthDto;
+
   @IsNotEmpty()
-  address: {
-    address1: string;
-    address2?: string;
-    isoCountryCode: string;
-    isoRegionCode: string;
-    city: string;
-    postalCode?: string;
-  };
+  @Type(() => AddressDto)
+  address: AddressDto;
+
   @IsNotEmpty()
   phoneNumber: string;
   @IsNotEmpty()

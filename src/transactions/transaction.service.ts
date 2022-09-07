@@ -30,6 +30,10 @@ export class TransactionService {
     entity.metadata = metadata;
     entity.currency = currency;
 
+    // TODO: Verify user have enough funds
+    // TODO: Debit funds for the transaction
+    // TODO: Update status
+
     entity.status = TransferStatus.TransferStarted;
     const query = {
       where: {
@@ -39,9 +43,8 @@ export class TransactionService {
     const account = await this.accountRepository.findOne(query);
     let res;
     if (account) {
-      console.log(account);
       res = await this.repository.save(entity);
-      await this.messagingService.publish(
+      await this.messagingService.publishToTxTopic(
         'transaction.created',
         new CreateTransactionEventDto(
           res.id,
@@ -51,6 +54,7 @@ export class TransactionService {
             accountName: account.accountName,
             country: account.country,
             mobile: account.mobile,
+            operator: account.operator,
             accountNumber: account.accountNumber,
             fiatAccountType: account.fiatAccountType,
             fiatAccountSchema: account.fiatAccountSchema,
@@ -96,6 +100,7 @@ export class TransactionService {
     entity.fiatAccountId = accountId;
     entity.amount = amount;
     entity.metadata = metadata;
+    entity.failure_reason = tx.failure_reason;
     entity.status = status ?? TransferStatus.TransferStarted;
     entity.transferType = transferType;
     const query1 = {
@@ -112,7 +117,7 @@ export class TransactionService {
     } as FindOneOptions<AccountEntity>;
     const account = await this.accountRepository.findOne(query2);
 
-    this.messagingService.publish(
+    await this.messagingService.publishToTxTopic(
       'transaction.updated',
       new UpdateTransactionEventDto(
         entity.id,
@@ -122,6 +127,7 @@ export class TransactionService {
           accountName: account.accountName,
           country: account.country,
           mobile: account.mobile,
+          operator: account.operator,
           accountNumber: account.accountNumber,
           fiatAccountType: account.fiatAccountType,
           fiatAccountSchema: account.fiatAccountSchema,

@@ -14,11 +14,12 @@ export class UsersService {
   create(createUserDto: UsersDTO): Promise<User> {
     const user = new User();
 
+    
     user.firstname = createUserDto.firstname;
     user.lastname = createUserDto.lastname;
     user.mobile = createUserDto.mobile;
     user.business_name = createUserDto.business_name;
-    user.address = createUserDto.address;
+    user.address = { ...createUserDto.address };
     user.balance = 0;
     user.isActive = false;
     user.currency = createUserDto.currency;

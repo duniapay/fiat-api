@@ -1,4 +1,6 @@
+import { Type } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { AddressDto } from '../../identities/dto/address.dto';
 
 export class UsersDTO {
   @IsNotEmpty()
@@ -22,12 +24,8 @@ export class UsersDTO {
   business_name: string;
 
   @IsNotEmpty()
-  address: {
-    country: string;
-    city: string;
-    postalCode?: string;
-    address: string;
-  };
+  @Type(() => AddressDto)
+  address: AddressDto;
 
   @IsNotEmpty()
   @IsString()

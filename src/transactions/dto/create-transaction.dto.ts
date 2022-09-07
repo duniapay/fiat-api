@@ -7,7 +7,7 @@ export class CreateTransactionDto extends BaseDTO {
   accountId: string;
   @IsNotEmpty()
   amount: number;
-  
+
   @IsNotEmpty()
   currency: string;
   @IsOptional()

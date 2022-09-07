@@ -35,10 +35,11 @@ export class User {
 
   @Column({ type: 'simple-json', nullable: true })
   address: {
-    country: string;
+    address1: string;
+    address2?: string;
+    isoCountryCode: string;
     city: string;
     postalCode?: string;
-    address: string;
   };
 
   @Column()

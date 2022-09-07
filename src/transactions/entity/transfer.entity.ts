@@ -10,9 +10,11 @@ export class TransferEntity extends BaseEntity {
   @Column({ name: 'fiatAccountId', type: 'varchar', length: 255 })
   fiatAccountId: string;
 
-
   @Column({ name: 'currency', type: 'varchar', length: 255 })
   currency: string;
+
+  @Column({ name: 'failure_reason', type: 'varchar', length: 255, nullable: true })
+  failure_reason: string;
 
   @ManyToOne(() => User, (user) => user.transactions)
   partner: User;

@@ -20,7 +20,7 @@ export class CreateTransactionEventDto {
     amount?: number,
     currency?: string,
     status?: TransferStatus,
-    metadata?: {},
+    metadata?: any,
     transferType?: TransferType,
   ) {
     this.account = account;

@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 import { LoggerService } from './logger/logger.service';
 import { LoggingInterceptor } from './domain/interceptors/logging.interceptors';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,7 +21,9 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  // app.useGlobalInterceptors(new LoggingInterceptor(new LoggerService()));
+  app.useGlobalPipes(new ValidationPipe());
+
+  // TODO: Fix Logger app.useGlobalInterceptors(new LoggingInterceptor(new LoggerService()));
 
   await app.listen(3000);
 }
