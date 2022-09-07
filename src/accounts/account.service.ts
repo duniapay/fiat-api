@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { LoggerService } from '../logger/logger.service';
+import { User } from '../users/entities/user.entity';
 
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -8,7 +11,10 @@ import { AccountRepository } from './repository/account.repository';
 
 @Injectable()
 export class AccountService {
-  constructor(private repository: AccountRepository, private readonly logger: LoggerService = new Logger(AccountService.name)) {}
+  constructor(
+    @InjectRepository(AccountEntity) private readonly repository: Repository<AccountEntity>,
+    private readonly logger: LoggerService = new Logger(AccountService.name),
+  ) {}
   async create(createAccountDto: CreateAccountDto) {
     const entity = new AccountEntity();
 
@@ -17,12 +23,11 @@ export class AccountService {
     entity.accountNumber = createAccountDto.accountNumber;
     entity.fiatAccountSchema = createAccountDto.fiatAccountSchema;
     entity.fiatAccountType = createAccountDto.fiatAccountType;
+    entity.country = createAccountDto.country;
     entity.mobile = createAccountDto.mobile;
     entity.operator = createAccountDto.operator;
     entity.owner = createAccountDto.ownerId;
-    await this.repository.save(entity).then((data) => {
-      return data;
-    });
+    return this.repository.save(entity);
   }
 
   async findAll() {
@@ -31,13 +36,15 @@ export class AccountService {
     });
   }
 
-  async findOne(id: number) {
-    await this.repository.findOneBy({ id }).then((data) => {
-      return data;
+  async findOne(id: string) {
+    return this.repository.findOne({
+      where: {
+        id,
+      },
     });
   }
 
-  async update(id: number, updateAccountDto: UpdateAccountDto) {
+  async update(id: string, updateAccountDto: UpdateAccountDto) {
     const entity = new AccountEntity();
     entity.accountName = updateAccountDto.accountName;
     entity.institutionName = updateAccountDto.institutionName;
@@ -47,19 +54,15 @@ export class AccountService {
     entity.mobile = updateAccountDto.mobile;
     entity.operator = updateAccountDto.operator;
     entity.owner = updateAccountDto.ownerId;
-    await this.repository
-      .update(
-        {
-          id,
-        },
-        entity,
-      )
-      .then((data) => {
-        return data;
-      });
+    return this.repository.update(
+      {
+        id,
+      },
+      entity,
+    );
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const entity = await this.repository.findOneBy({ id });
     await this.repository.remove(entity).then(() => {
       return true;

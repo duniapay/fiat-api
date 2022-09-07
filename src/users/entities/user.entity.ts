@@ -6,20 +6,47 @@ import { Role } from '../enums/role.enum';
 @Entity()
 @Unique(['email'])
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column()
-  name: string;
+  @Column({ type: 'varchar', length: 255 })
+  firstname: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
+  lastname: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  salt: string;
+
+  @Column({ type: 'varchar', length: 255 })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
+  mobile: string;
+
+  @Column({ type: 'varchar', length: 255 })
   password: string;
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ nullable: true })
+  business_name: string;
+
+  @Column({ type: 'simple-json', nullable: true })
+  address: {
+    address1: string;
+    address2?: string;
+    isoCountryCode: string;
+    city: string;
+    postalCode?: string;
+  };
+
+  @Column()
+  balance: number;
+
+  @Column({ type: 'varchar', length: 255 })
+  currency: string;
 
   @Column({
     type: 'enum',

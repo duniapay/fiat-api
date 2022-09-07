@@ -3,6 +3,7 @@ import { BaseModel } from '../../domain/model/base.model';
 
 export class KycModel extends BaseModel {
   kycRequired: boolean;
+  email: string;
 
   kycSchemaName?: KycSchema;
 
@@ -21,7 +22,6 @@ export class KycModel extends BaseModel {
     address1: string;
     address2?: string;
     isoCountryCode: string;
-    isoRegionCode: string;
     city: string;
     postalCode?: string;
   };

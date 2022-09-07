@@ -5,16 +5,17 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class AccountEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     name: 'operator',
     type: 'enum',
     enum: SupportedOperatorEnum,
+    nullable: true,
   })
   operator?: SupportedOperatorEnum;
-  @Column({ name: 'institutionName', type: 'varchar', length: 255 })
+  @Column({ name: 'institutionName', type: 'varchar', length: 255, nullable: true })
   institutionName: string;
   @Column({ name: 'accountName', type: 'varchar', length: 255 })
   accountName: string;
@@ -22,20 +23,22 @@ export class AccountEntity extends BaseEntity {
   mobile?: string;
   @Column({ name: 'country', type: 'varchar', length: 255 })
   country: string;
-  @Column({ name: 'accountNumber', type: 'varchar', length: 255 })
+  @Column({ name: 'accountNumber', type: 'varchar', length: 255, nullable: true })
   accountNumber?: string;
-  @Column({
-    name: 'fiatAccountType',
-    type: 'enum',
-    enum: FiatAccountType,
-  })
+
   @Column({ name: 'owner', type: 'varchar', length: 255 })
   owner: string;
 
   @ManyToOne(() => User, (user) => user.accounts)
   partner: User;
 
+  @Column({
+    name: 'fiatAccountType',
+    type: 'enum',
+    enum: FiatAccountType,
+  })
   fiatAccountType: FiatAccountType;
+
   @Column({
     name: 'fiatAccountSchema',
     type: 'enum',

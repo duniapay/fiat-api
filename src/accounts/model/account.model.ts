@@ -1,8 +1,4 @@
-import {
-  FiatAccountSchema,
-  FiatAccountType,
-  SupportedOperatorEnum,
-} from '@fiatconnect/fiatconnect-types';
+import { FiatAccountSchema, FiatAccountType, SupportedOperatorEnum } from '@fiatconnect/fiatconnect-types';
 import { BaseModel } from '../../domain/model/base.model';
 
 export class AccountModel extends BaseModel {

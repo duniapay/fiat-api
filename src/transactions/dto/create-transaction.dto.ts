@@ -8,6 +8,8 @@ export class CreateTransactionDto extends BaseDTO {
   @IsNotEmpty()
   amount: number;
 
+  @IsNotEmpty()
+  currency: string;
   @IsOptional()
   metadata: any;
 

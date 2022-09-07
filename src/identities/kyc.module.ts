@@ -3,12 +3,13 @@ import { KycService } from './kyc.service';
 import { KycController } from './kyc.controller';
 import { KYCEntity } from './entity/kyc.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { KYCRepository } from './repository/KYC.repository';
 import { LoggerModule } from '../logger/logger.module';
+import { AccountEntity } from '../accounts/entity/account.entity';
+import { MessagingModule } from '../messaging/messaging.module';
 
 @Module({
-  imports: [LoggerModule, TypeOrmModule.forFeature([KYCEntity])],
+  imports: [LoggerModule, MessagingModule, TypeOrmModule.forFeature([AccountEntity]), TypeOrmModule.forFeature([KYCEntity])],
   controllers: [KycController],
-  providers: [KycService, KYCRepository],
+  providers: [KycService],
 })
 export class KycModule {}

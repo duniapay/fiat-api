@@ -1,11 +1,11 @@
 import { KycSchema, KycStatus } from '@fiatconnect/fiatconnect-types';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { AccountEntity } from '../../accounts/entity/account.entity';
 
 @Entity()
 export class KYCEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ name: 'kycRequired', type: 'bool' })
   kycRequired: boolean;
@@ -26,7 +26,7 @@ export class KYCEntity extends BaseEntity {
 
   @Column({ type: 'varchar', length: 255 })
   firstName: string;
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   middleName?: string;
   @Column({ type: 'varchar', length: 255 })
   lastName: string;
@@ -42,13 +42,12 @@ export class KYCEntity extends BaseEntity {
     address1: string;
     address2?: string;
     isoCountryCode: string;
-    isoRegionCode: string;
     city: string;
     postalCode?: string;
   };
   @Column({ type: 'varchar', length: 255 })
-  phoneNumber: string;
-  @Column({ type: 'varchar', length: 255 })
+  mobile: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
   email?: string;
   @Column({ type: 'varchar', length: 255 })
   selfieDocument: string;
@@ -57,4 +56,13 @@ export class KYCEntity extends BaseEntity {
 
   @ManyToOne(() => AccountEntity, (account) => account.identities)
   account: AccountEntity;
+
+  @CreateDateColumn()
+  created_At: Date;
+
+  @UpdateDateColumn()
+  updated_At: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  expires_At: Date;
 }
